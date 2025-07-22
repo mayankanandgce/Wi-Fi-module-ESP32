@@ -1,0 +1,32 @@
+#include "WiFi.h"
+
+void setup() {
+  Serial.begin(115200);       // Start serial monitor at 115200 baud
+  WiFi.mode(WIFI_STA);        // Set ESP32 to Station mode
+  WiFi.disconnect();          // Disconnect from any previous WiFi
+  delay(100);
+  Serial.println("WiFi Scanner Ready");
+}
+
+void loop() {
+  Serial.println("Scanning for networks...");
+
+  int n = WiFi.scanNetworks();   // Scan and get number of networks
+  if (n == 0) {
+    Serial.println("No networks found.");
+  } else {
+    Serial.print(n);
+    Serial.println(" networks found:");
+    for (int i = 0; i < n; ++i) {
+      Serial.print(i + 1);
+      Serial.print(": ");
+      Serial.print(WiFi.SSID(i));          // Network name
+      Serial.print(" (RSSI: ");
+      Serial.print(WiFi.RSSI(i));          // Signal strength
+      Serial.print(" dBm) ");
+      Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? "[Open]" : "[Secured]");
+    }
+  }
+  Serial.println();
+  delay(5000);   // Wait 5 seconds before next scan
+}
